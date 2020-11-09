@@ -1,0 +1,66 @@
+CREATE DATABASE GCTripPlanner;
+USE GCTripPlanner;
+
+CREATE TABLE Passport(
+  [PassportID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+  [Name] NVARCHAR(50),
+  [IssueCountry] NVARCHAR(25),
+  [IssueDate] DATE,
+  [ExpirationDate] DATE,
+  [PassportNumber] NVARCHAR(9)
+);
+
+CREATE TABLE Users(
+  [UserID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+  [Name] NVARCHAR(50),
+  [StreetAddress] NVARCHAR(40),
+  [City] NVARCHAR(25),
+  [Region] NVARCHAR(20),
+  [PostalCode] NVARCHAR(8),
+  [PhoneNumber] NVARCHAR(12),
+  [DOB] Date,
+  [PassportID] INT FOREIGN KEY REFERENCES Passport(PassportID)
+);
+
+CREATE TABLE Trip (
+  [TripID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+  [TripName] NVARCHAR(50),
+  [Budget] INT,
+  [StartingDate] Date,
+  [EndingDate] Date,
+  [StartingPostalCode] NVARCHAR(5),
+  [EndingPostalCode] NVARCHAR(5),
+  [TravelMethod] NVARCHAR(8),
+  [GroupID] INT FOREIGN KEY REFERENCES TripGroup(GroupID),
+  [ReservtionGroup] NVARCHAR(10) FOREIGN KEY
+);
+
+CREATE TABLE TripGroup(
+  [GroupID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+  [TripID] INT FOREIGN KEY REFERENCES Trip(TripID),
+  [UserID] INT FOREIGN KEY REFERENCES Users(UserID)
+);
+
+CREATE TABLE Hotel (
+  [HotelID] INT  NOT NULL PRIMARY KEY IDENTITY(1,1),
+  [HotelName] NVARCHAR(40),
+  [CostPerNight] Float,
+  [StreetAddress] NVARCHAR(50),
+  [City] NVARCHAR(25),
+  [Region] NVARCHAR(40),
+  [PostalCode] NVARCHAR(6),
+  [PhoneNumber] NVARCHAR(12)
+);
+
+CREATE TABLE Reservation (
+  [ReservationID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+  [HotelID] INT FOREIGN KEY REFERENCES Hotel(HotelID),
+  [CheckinDate] DATE,
+  [CheckoutDate] DATE,
+  [TripID] INT FOREIGN KEY REFERENCES Trip(TripID)
+);
+
+CREATE TABLE ReservationGroup (
+  [ReservationGroupID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+  [ReservationID] INT FOREIGN KEY REFERENCES Reservation(ReservationID)
+);
